@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "confederations.h"
-#include "input.h"
-#include "player.h"
+
+static int incrementalIDConfederations() {
+	static int id = 1000;
+	return id++;
+}
 
 void hardcodeConfederations(sConfederation confederations[]) {
 	sConfederation hardcode[6] = {
@@ -21,7 +24,7 @@ void hardcodeConfederations(sConfederation confederations[]) {
 }
 
 void showConfederation(sConfederation confederations){
-	printf("|| %d | %10s | %10s | %d ||\n", confederations.id, confederations.name, confederations.region, confederations.creationYear);
+	printf("|| %d | %12s | %10s | %7d ||\n", confederations.id, confederations.name, confederations.region, confederations.creationYear);
 }
 
 int listConfederations(sConfederation confederations[], int len_cf) {
@@ -29,11 +32,9 @@ int listConfederations(sConfederation confederations[], int len_cf) {
 
 	if (confederations != NULL && len_cf > 0) {
 		printf("\n====================================================\n");
-		printf("|| ID | CONFEDERACION | REGION | AÑO DE CREACION ||\n");
+		printf("||  ID  | CONFEDERACION |   REGION   | AÑO DE CREACION ||\n");
 		for (int i = 0; i < len_cf; i++) {
-			//printf("===================================\n");
 			showConfederation(confederations[i]);
-			//printf("===================================");
 		}
 		rtn = 1;
 	}
@@ -55,8 +56,22 @@ int loadConfederationsName(sConfederation confederations[], int len, int idConfe
 
 	return rtn;
 }
-/*
-//////////// ABM CONFERERATIONS /////////////
+
+int loadConfederationsRegion(sConfederation confederations[], int len, int idConfederation, char region[]) {
+	int rtn = 0;
+
+	if (confederations != NULL && len > 0 && region != NULL) {
+		for (int i = 0; i < len; i++) {
+			if (confederations[i].id == idConfederation) {
+				strcpy(region, confederations[i].region);
+				rtn = 1;
+				break;
+			}
+		}
+	}
+
+	return rtn;
+}
 
 int initConfederations(sConfederation confederations[], int len) {
 	int rtn = 0;
@@ -74,26 +89,23 @@ int id;
 	char name[50];
 	char region[50];
 	int creationYear;
+
+
 sConfederation loadConfederation() {
 
 	sConfederation aux;
-	char auxName;
-	char auxRegion;
 
-	aux.id = incrementalID();
-
-	getName(&auxName, 50, "Ingrese nombre de confederacion: ", "Nombre inválido", 3);
-	strcpy(aux.name, auxName);
-
-
-	getNumber(&aux.creationYear, "Ingrese año de creación: ", "ID inválido", 1001, 1006, 3);
-
-	//aux.isEmpty = OCCUPIED;
+	if (getConfederation(aux.name, 50, "Ingrese nombre de confederacion: ", "Nombre inválido", 3) == 0
+			&& getRegion(aux.region, 50, "Ingrese region de confederacion: ", "Region inválido", 3) == 0
+			&& getNumber(&aux.creationYear, "Ingrese año de creacion de la confederación: ", "Año inválido", 1916, 2015, 3) == 0) {
+		aux.id = incrementalIDConfederations();
+		aux.isEmpty = OCCUPIED;
+	}
 
 	return aux;
 }
 
-int findIsEmpty(sConfederation confederations[], int len) {
+int findIsEmptyConfederation(sConfederation confederations[], int len) {
 	int rtn = 0;
 	int i;
 
@@ -101,7 +113,7 @@ int findIsEmpty(sConfederation confederations[], int len) {
 		for (i = 0; i < len; i++) {
 			if (confederations[i].isEmpty == FREE) {
 				rtn = i;
-				break; //para romper las siguientes iteraciones del for una vez que se cumpla la condicion del if
+				break;
 			}
 		}
 	}
@@ -109,12 +121,12 @@ int findIsEmpty(sConfederation confederations[], int len) {
 	return rtn;
 }
 
-int addConfederation(sConfederation confederations[],int len) {
+int addConfederation(sConfederation confederations[], int len) {
 	int rtn = 0;
 	int i;
 
 	if (confederations != NULL && len > 0) {
-		i = findIsEmpty(confederations, len);
+		i = findIsEmptyConfederation(confederations, len);
 		if (i != -1) {
 			confederations[i] = loadConfederation();
 		}
@@ -124,15 +136,15 @@ int addConfederation(sConfederation confederations[],int len) {
 	return rtn;
 }
 
-int findByID(sConfederation confederations[], int len, int id) {
-	int rtn = -1; // para hacer if i<0 el legajo no existe
+int findByIDConfederation(sConfederation confederations[], int len, int id) {
+	int rtn = -1;
 	int i;
 
 	if (confederations != NULL && len > 0) {
 		for (i = 0; i < len; i++) {
 			if (confederations[i].id == id) {
 				rtn = i;
-				break; //para romper las siguientes iteraciones del for una vez que se cumpla la condicion del if
+				break;
 			}
 		}
 	}
@@ -140,16 +152,16 @@ int findByID(sConfederation confederations[], int len, int id) {
 	return rtn;
 }
 
-int deletePlayer(sConfederation confederations[], int len) { // se muestra lista de jugadores ordenados por id y se elimina por id
+int deleteConfederation(sConfederation confederations[], int len) {
 	int rtn = 0;
 	int id;
 	int i;
 
-	printf("Ingrese el ID del jugador que desea eliminar: ");
+	printf("Ingrese el ID de la confederacion que desea eliminar: ");
 	scanf("%d", &id);
 
-	if (confederations != NULL && len > 0 && id < 1) {
-		i = findByID(confederations, len, id);
+	if (confederations != NULL && len > 0) {
+		i = findByIDConfederation(confederations, len, id);
 		if (i != -1) {
 			confederations[i].isEmpty = FREE;
 			rtn = 1;
@@ -161,32 +173,30 @@ int deletePlayer(sConfederation confederations[], int len) { // se muestra lista
 	return rtn;
 }
 
-int modifyProducto(sConfederation confederations[], int len) { // para borrar un prod primero le muestro todo lo que tenga
+int modifyConfederation(sConfederation confederations[], int len) {
 	int rtn = 0;
 	int id;
 	int i;
 	int option;
 
-	printf("Ingrese el ID del jugador que desea modificar: ");
+	printf("\nIngrese el ID de la confederacion que desea modificar: ");
 	scanf("%d", &id);
 
 	if (confederations != NULL && len > 0 && id > 0) {
-		i = findByID(confederations, len, id);
+		i = findByIDConfederation(confederations, len, id);
 		if (i != -1) {
 			printf("\nModificar:\n1. Nombre\n2. Región\n3. Año de creación\n");
 			scanf("%d", &option);
 			switch (option) {
 			case 1:
-				printf("\nIngrese el nuevo nombre: ");
-
+				getConfederation(confederations[i].name, 50, "\nIngrese el nuevo nombre: ", "Nombre inválido", 3);
 				break;
 			case 2:
-				printf("\nIngrese la nueva región: ");
-
+				getRegion(confederations[i].region, 50, "\nIngrese la nueva región: ", "Region inválido", 3);
 				break;
 			case 3:
 				printf("\nIngrese el nuevo año de creación: ");
-
+				getNumber(&confederations[i].creationYear, "\nIngrese el nuevo año de creación: ", "Año inválido", 1916, 2015, 3);
 				break;
 			}
 		rtn = 1;
@@ -197,7 +207,4 @@ int modifyProducto(sConfederation confederations[], int len) { // para borrar un
 
 	return rtn;
 }
-*/
-
-
 

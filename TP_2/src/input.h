@@ -2,46 +2,105 @@
 #define INPUT_H_
 
 /**
- * \brief Solicita un numero al usuario, luego de verificarlo devuelve el resultado
- * \param pResultado Puntero al espacio de memoria donde se dejara el resultado de la funcion
- * \param mensaje Es el mensaje a ser mostrado
- * \param mensajeError Es el mensaje de Error a ser mostrado
- * \param minimo Es el numero maximo a ser aceptado
- * \param maximo Es el minimo minimo a ser aceptado
- * \return Retorna 0 si se obtuvo el numero y -1 si no
- */
+* \brief Take a string and evaluate if it is an integer
+* \param pResultado Receive the number entered in case of success
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param minimo the minimum amount allowed
+* \param maximo the maximun amount allowed
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
 int getNumber(int *pResultado, char *mensaje, char *mensajeError,int minimo, int maximo, int reintentos);
 
 /**
-* \brief Toma una cadena y evalua si tiene solo letras
-* \param pAlfabetico Recibe el texto ingresado en caso de exito
-* \param limite Es el tamano maximo del string
-* \param mensaje Es el mensaje que se muestra al usuario antes de introducir datos
-* \param mensajeError Es el mensaje que se muestra en caso de error
-* \param reintentos Veces que el usuario podra volver a introducir el dato
-* \return En caso de exito retorna 0, si no -1
-*
+* \brief receives a string and evaluates it to be a valid name
+* \param stringRecibido received string
+* \return In case of success it returns 0, if not -1
 */
-int getAlfabetico(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos);
-
-int getName(char *pNombre, int limite, char *mensaje, char *mensajeError, int reintentos);
+int isValidName(char* stringRecibido);
 
 /**
-* \brief Toma una cadena y evalua si es un float
-* \param pFloat Recibe el numero ingresado en caso de exito
-* \param limite Es el numero de cifras
-* \param mensaje Es el mensaje que se muestra al usuario antes de introducir datos
-* \param mensajeError Es el mensaje que se muestra en caso de error
-* \param reintentos Veces que el usuario podra volver a introducir el dato
-* \return En caso de exito retorna 0, si no -1
+* \brief receives a string and evaluates it to be a valid name
+* \param resultado  received string
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param minimo the minimum amount of char allowed
+* \param maximo the maximun amount of char allowed
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
 */
-int getFloat(float *pFloat, int limite, char *mensaje, char *mensajeError, int reintentos);
+int getName(char* resultado, char* msg, char* msgError, int min, int max, int reintentos);
 
+/**
+* \brief receives a string and evaluates it to be a valid position
+* \param pAlfabetico  received string
+* \param limite limit of string length
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
 int getPosition(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos);
 
+/**
+* \brief receives a string and evaluates it to be a valid confederation
+* \param pAlfabetico  received string
+* \param limite limit of string length
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
+int getConfederation(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos);
+
+/**
+* \brief receives a string and evaluates it to be a valid region
+* \param pAlfabetico  received string
+* \param limite limit of string length
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
+int getRegion(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos);
+
+/**
+* \brief Take a string and evaluate if it is a short integer
+* \param pResultado Receive the number entered in case of success
+* \param mensaje It is the message that is shown to the user before entering data
+* \param mensajeError It is the message that is displayed in case of error
+* \param minimo the minimum amount allowed
+* \param maximo the maximun amount allowed
+* \param reintentos Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
 int getShort(short *pResultado, char *mensaje, char *mensajeError, short minimo, short maximo, int reintentos);
 
-int utn_getFloatPositivo(   float *pFloat, int limite, char *mensaje,
-                            char *mensajeError, int reintentos);
+/**
+* \brief Take a string and evaluate if it is a float
+* \param str receive the string
+* \return In case of success it returns 0, if not -1
+*/
+int isValidFloat(char *str);
+
+/**
+* \brief Take a string and evaluate if it is a float
+* \param pFloat Receive the number entered in case of success
+* \return In case of success it returns 0, if not -1
+*/
+int isFloat(float* pResult);
+
+/**
+* \brief Take a string and evaluate if it is a float
+* \param pResult Receive the number entered in case of success
+* \param message It is the message that is shown to the user before entering data
+* \param errorMessage It is the message that is displayed in case of error
+* \param min the minimum amount allowed
+* \param max the maximun amount allowed
+* \param retries Number of times the user can re-enter the data
+* \return In case of success it returns 0, if not -1
+*/
+int getFloat(float* pResult, char* message, char* errorMessage, float min, float max, int retries);
 
 #endif /* INPUT_H_ */

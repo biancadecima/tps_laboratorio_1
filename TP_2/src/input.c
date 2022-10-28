@@ -15,45 +15,6 @@ static int myGets(char *cadena, int longitud) {
 	return -1;
 }
 
-static int esNumerica(char *cadena) {
-	int i = 0;
-	int retorno = 1;
-	if (cadena != NULL && strlen(cadena) > 0) {
-		while (cadena[i] != '\0') {
-			if (cadena[i] < '0' || cadena[i] > '9') {
-				retorno = 0;
-				break;
-			}
-			i++;
-		}
-	}
-	return retorno;
-}
-
-static int getInt(int *pResultado) {
-	int retorno = -1;
-	char buffer[64];
-	if (pResultado != NULL) {
-		if (myGets(buffer, sizeof(buffer)) == 0 && esNumerica(buffer)) {
-			*pResultado = atoi(buffer);
-			retorno = 0;
-		}
-	}
-	return retorno;
-}
-
-static int isValidShort(short *pResultado) {
-	int retorno = -1;
-	char buffer[64];
-	if (pResultado != NULL) {
-		if (myGets(buffer, sizeof(buffer)) == 0 && esNumerica(buffer)) {
-			*pResultado = atoi(buffer);
-			retorno = 0;
-		}
-	}
-	return retorno;
-}
-
 static int getString(char *pBuffer, int limite)
 {
     int retorno = -1;
@@ -100,57 +61,71 @@ static int isValidAlfabetico(char *pBuffer, int limite)
     return retorno;
 }
 
-static int isValidNombre(char *pBuffer, int limite)
+int isValidString(char* msg, char* msgError, int min, int max, int* reintentos, char* resultado)
 {
-    int retorno = 0;
-    int cantidadEspacios = 0;
-    int i;
-    if( pBuffer != NULL && limite > 0 && strlen(pBuffer) > 0)
+    int retorno=-1;
+    char bufferStr[max+10];
+
+    if(msg!=NULL && msgError!=NULL && min<=max && reintentos>=0 && resultado!=NULL)
     {
-        retorno = 1;
-        for(i=1; i < limite && pBuffer[i] != '\0'; i++)
+        do
         {
-            if(pBuffer[i]==' ' && cantidadEspacios == 0)
+            printf("%s",msg);
+            fflush(stdin);
+            fgets(bufferStr,sizeof(bufferStr),stdin);
+            bufferStr[strlen(bufferStr)-1]='\0';
+
+            if(strlen(bufferStr)>=min && strlen(bufferStr)<max)
             {
-                cantidadEspacios++;
-            }
-            else if(!(pBuffer[i] >= 'a' && pBuffer[i] <= 'z' && pBuffer[i-1] != ' ') &&
-                    !( pBuffer[i-1] == ' '))
-            {
-                retorno = 0;
+                strncpy(resultado,bufferStr,max);
+                retorno=0;
                 break;
             }
+            printf("%s 1",msgError);
+            (*reintentos)--;
         }
+        while((*reintentos)>=0);
     }
     return retorno;
 }
 
+static int esNumerica(char *cadena) {
+	int i = 0;
+	int retorno = 1;
+	if (cadena != NULL && strlen(cadena) > 0) {
+		while (cadena[i] != '\0') {
+			if (cadena[i] < '0' || cadena[i] > '9') {
+				retorno = 0;
+				break;
+			}
+			i++;
+		}
+	}
+	return retorno;
+}
 
+static int getInt(int *pResultado) {
+	int retorno = -1;
+	char buffer[64];
+	if (pResultado != NULL) {
+		if (myGets(buffer, sizeof(buffer)) == 0 && esNumerica(buffer)) {
+			*pResultado = atoi(buffer);
+			retorno = 0;
+		}
+	}
+	return retorno;
+}
 
-static int isValidFloat(char *pBuffer, int limite)
-{
-    int retorno = 0;
-    int i;
-    int contadorDePuntos = 0;
-    if  ((pBuffer != NULL && limite > 0 && strlen(pBuffer) > 0) &&
-            (((pBuffer[0] == '-' || pBuffer[0] == '+') && pBuffer[1] != '.') ||
-             (pBuffer[0]>='0' && pBuffer[0]<='9')))
-    {
-        retorno = 1;
-        for(i=1; i < limite && pBuffer[i] != '\0'; i++)
-        {
-            if(pBuffer[i]=='.' && contadorDePuntos==0)
-            {
-                contadorDePuntos++;
-            }
-            else if (!(pBuffer[i]>='0' && pBuffer[i]<='9'))
-            {
-                retorno = 0;
-                break;
-            }
-        }
-    }
-    return retorno;
+static int isValidShort(short *pResultado) {
+	int retorno = -1;
+	char buffer[64];
+	if (pResultado != NULL) {
+		if (myGets(buffer, sizeof(buffer)) == 0 && esNumerica(buffer)) {
+			*pResultado = atoi(buffer);
+			retorno = 0;
+		}
+	}
+	return retorno;
 }
 
 int getNumber(int *pResultado, char *mensaje, char *mensajeError,int minimo, int maximo, int reintentos) {
@@ -171,81 +146,45 @@ int getNumber(int *pResultado, char *mensaje, char *mensajeError,int minimo, int
 	return retorno;
 }
 
-int getAlfabetico(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos)
+int isValidName(char* stringRecibido)
 {
-    int retorno=-1;
-    char bufferAlfabetico[4096];
-    if( pAlfabetico != NULL && limite > 0 && mensaje != NULL &&
-            mensajeError != NULL && reintentos>=0)
+    int retorno=1;
+    int i;
+    for(i=0;stringRecibido[i]!='\0';i++)
     {
-        do
+        if((stringRecibido[i]<'A' && stringRecibido[i]!=' ' && stringRecibido[i]!='-') ||
+           (stringRecibido[i]>'Z' && stringRecibido[i]<'a') ||
+           stringRecibido[i]>'z')
         {
-            reintentos--;
-            printf("\n%s", mensaje);
-            if( getString(bufferAlfabetico, limite) == 0 &&
-                isValidAlfabetico(bufferAlfabetico, limite))
-            {
-                strncpy(pAlfabetico, bufferAlfabetico, limite);
-                retorno = 0;
-                break;
-            }
-            else
-            {
-                printf("\n%s", mensajeError);
-            }
+            retorno=0;
+            break;
         }
-        while(reintentos>=0);
     }
     return retorno;
 }
 
-int getName(char *pNombre, int limite, char *mensaje, char *mensajeError, int reintentos)
+int getName(char* resultado, char* msg, char* msgError, int min, int max, int reintentos)
 {
     int retorno=-1;
-    char buffer[4096];
-    if( pNombre != NULL && limite > 0 && mensaje != NULL && mensajeError != NULL && reintentos>=0)
-    {
-        do
-        {
-            reintentos--;
-            printf("\n%s", mensaje);
-            if( getString(buffer, limite) == 0 &&
-                isValidNombre(buffer, limite))
-            {
-                strncpy(pNombre, buffer, limite);
-                retorno = 0;
-                break;
-            }
-            else
-            {
-                printf("\n%s", mensajeError);
-            }
-        }
-        while(reintentos>=0);
-    }
-    return retorno;
-}
+    char bufferStr[max];
 
-int getFloat(float *pFloat, int limite, char *mensaje, char *mensajeError, int reintentos){
-    int retorno=-1;
-    char bufferFloat[4096];
-    if( pFloat != NULL && limite > 0 && mensaje != NULL &&
-        mensajeError != NULL && reintentos>=0)
+    if(msg!=NULL && msgError!=NULL && min<=max && reintentos>=0 && resultado!=NULL)
     {
         do
         {
-            reintentos--;
-            printf("\n%s", mensaje);
-            if( getString(bufferFloat, limite) == 0 &&
-                isValidFloat(bufferFloat, limite))
+            if(!isValidString(msg,msgError,min,max,&reintentos,bufferStr)) //==0
             {
-                *pFloat = atof(bufferFloat);
-                retorno = 0;
-                break;
-            }
-            else
-            {
-                printf("\n%s", mensajeError);
+                if(isValidName(bufferStr)==1)
+                {
+                    strncpy(resultado,bufferStr,max);
+                    retorno=0;
+                    break;
+                }
+                else
+                {
+                    printf("%s 2",msgError);
+                    reintentos--;
+                }
             }
         }
         while(reintentos>=0);
@@ -282,7 +221,65 @@ int getPosition(char *pAlfabetico, int limite, char *mensaje,char *mensajeError,
 	return rtn;
 }
 
-//////////////////////////////////////////////
+int getConfederation(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos){
+	int rtn = -1;
+	char bufferAlfabetico[4096];
+	if (pAlfabetico != NULL && limite > 0 && mensaje != NULL && mensajeError != NULL && reintentos >= 0) {
+		do {
+			reintentos--;
+			printf("\n%s", mensaje);
+			if (getString(bufferAlfabetico, limite) == 0
+					&& isValidAlfabetico(bufferAlfabetico, limite)
+					&& (strcmp(bufferAlfabetico, "UEFA") == 0
+							|| strcmp(bufferAlfabetico, "uefa") == 0
+							|| strcmp(bufferAlfabetico, "OFC") == 0
+							|| strcmp(bufferAlfabetico, "ofc") == 0
+							|| strcmp(bufferAlfabetico, "afc") == 0
+							|| strcmp(bufferAlfabetico, "AFC") == 0
+							|| strcmp(bufferAlfabetico, "CAF") == 0
+							|| strcmp(bufferAlfabetico, "caf") == 0
+							|| strcmp(bufferAlfabetico, "CONCACAF") == 0
+							|| strcmp(bufferAlfabetico, "concacaf") == 0
+							|| strcmp(bufferAlfabetico, "CONMEBOL") == 0
+							|| strcmp(bufferAlfabetico, "conmebol") == 0)) {
+				strncpy(pAlfabetico, bufferAlfabetico, limite);
+				rtn = 0;
+				break;
+			} else {
+				printf("\n%s", mensajeError);
+			}
+		} while (reintentos >= 0);
+	}
+
+	return rtn;
+}
+
+int getRegion(char *pAlfabetico, int limite, char *mensaje,char *mensajeError, int reintentos){
+	int rtn = -1;
+	char bufferAlfabetico[4096];
+	if (pAlfabetico != NULL && limite > 0 && mensaje != NULL && mensajeError != NULL && reintentos >= 0) {
+		do {
+			reintentos--;
+			printf("\n%s", mensaje);
+			if (getString(bufferAlfabetico, limite) == 0
+					&& isValidAlfabetico(bufferAlfabetico, limite)
+					&& (strcmp(bufferAlfabetico, "Asia") == 0
+							|| strcmp(bufferAlfabetico, "Africa") == 0
+							|| strcmp(bufferAlfabetico, "Norte") == 0
+							|| strcmp(bufferAlfabetico, "Sudamerica") == 0
+							|| strcmp(bufferAlfabetico, "Oceania") == 0
+							|| strcmp(bufferAlfabetico, "Europa") == 0)) {
+				strncpy(pAlfabetico, bufferAlfabetico, limite);
+				rtn = 0;
+				break;
+			} else {
+				printf("\n%s", mensajeError);
+			}
+		} while (reintentos >= 0);
+	}
+
+	return rtn;
+}
 
 int getShort(short *pResultado, char *mensaje, char *mensajeError, short minimo, short maximo, int reintentos) {
 	short bufferShort;
@@ -302,59 +299,70 @@ int getShort(short *pResultado, char *mensaje, char *mensajeError, short minimo,
 	return retorno;
 }
 
-/////
-
-static int isValidFloatPositivo(char *pBuffer, int limite)
-{
-    int retorno = 0;
+int isValidFloat(char *str) {
+    int rtn = -1;
+    int longitud = strlen(str);
+    while (longitud > 0 && isspace(str[longitud - 1]))
+        longitud--;
+    if (longitud <= 0) return 0;
     int i;
-    int contadorDePuntos = 0;
-    if  ((pBuffer != NULL && limite > 0 && strlen(pBuffer) > 0) &&
-            (( pBuffer[0] == '+' && pBuffer[1] != '.') ||
-            (pBuffer[0]>='0' && pBuffer[0]<='9')))
-    {
-        retorno = 1;
-        for(i=1; i < limite && pBuffer[i] != '\0'; i++)
-        {
-            if(pBuffer[i]=='.' && contadorDePuntos==0)
-            {
-                contadorDePuntos++;
-            }
-            else if (!(pBuffer[i]>='0' && pBuffer[i]<='9'))
-            {
-                retorno = 0;
+    int haEncontradoElPunto = 0;
+    for (i = 0; i < longitud; ++i) {
+        if (str[i] == '-' && i > 0) {
+            rtn = 0;
+            break;
+        }
+        if (str[i] == '.') {
+            if (haEncontradoElPunto) {
+                rtn = 0;
                 break;
+            } else {
+
+                haEncontradoElPunto = 1;
             }
         }
+        if (!isdigit(str[i]) && str[i] != '-' && str[i] != '.') {
+            rtn = 0;
+            break;
+        }
     }
+    return rtn;
+}
+
+int isFloat(float* pResult)
+{
+    int retorno=-1;
+    char buffer[64];
+    if(pResult != NULL)
+    {
+        if(myGets(buffer,sizeof(buffer))==0 && isValidFloat(buffer))
+        {
+            *pResult = atof(buffer);
+            retorno = 0;
+        }
+    }
+
     return retorno;
 }
 
-int utn_getFloatPositivo(   float *pFloat, int limite, char *mensaje,
-                            char *mensajeError, int reintentos)
+int getFloat(float* pResult, char* message, char* errorMessage, float min, float max, int retries)
 {
-    int retorno=-1;
-    char bufferFloat[4096];
-    if( pFloat != NULL && limite > 0 && mensaje != NULL &&
-        mensajeError != NULL && reintentos>=0)
+    float bufferFloat;
+    int retorno = -1;
+    while(retries>0)
     {
-        do
+        retries--;
+        printf("%s",message);
+        if(isFloat(&bufferFloat) == 0)
         {
-            reintentos--;
-            printf("\n%s", mensaje);
-            if( getString(bufferFloat, limite) == 0 &&
-                isValidFloatPositivo(bufferFloat, limite))
+            if(bufferFloat >= min && bufferFloat <= max)
             {
-                *pFloat = atof(bufferFloat);
+                *pResult = bufferFloat;
                 retorno = 0;
                 break;
             }
-            else
-            {
-                printf("\n%s", mensajeError);
-            }
         }
-        while(reintentos>=0);
+        printf("%s",errorMessage);
     }
     return retorno;
 }
