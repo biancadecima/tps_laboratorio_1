@@ -3,12 +3,6 @@
 
 #include "parser.h"
 
-/** \brief Parsea los datos de los jugadores desde el archivo jugadores.csv (modo texto).
- *
- * \param path char*
- * \param pArrayListJugador LinkedList*
- * \return int
- */
 int parser_JugadorFromText(FILE* pFile , LinkedList* pArrayListJugador)
 {
 	int retorno;
@@ -43,13 +37,6 @@ int parser_JugadorFromText(FILE* pFile , LinkedList* pArrayListJugador)
     return retorno;
 }
 
-/** \brief Parsea los datos de los jugadores desde el archivo binario.
- *
- * \param path char*
- * \param pArrayListJugador LinkedList*
- * \return int
- *
- */
 int parser_JugadorFromBinary(FILE* pFile , LinkedList* pArrayListJugador){
 	int retorno = 0;
 	Jugador* pJugador;
@@ -90,7 +77,7 @@ int parser_SeleccionFromText(FILE* pFile , LinkedList* pArrayListSeleccion)
 	Seleccion* pSeleccion;
 
 	if(pFile != NULL && pArrayListSeleccion != NULL){
-		fscanf(pFile, "%[^,],%[^,],%[^,],%[^\n]\n", auxId, auxPais, auxConfederacion, auxConvocados);// lectura fantasma
+		fscanf(pFile, "%[^,],%[^,],%[^,],%[^\n]\n", auxId, auxPais, auxConfederacion, auxConvocados);
 		do{
 			retornoFscanf = fscanf(pFile, "%[^,],%[^,],%[^,],%[^\n]\n", auxId, auxPais, auxConfederacion, auxConvocados);
 			if(retornoFscanf == 4){
