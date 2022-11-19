@@ -2,6 +2,7 @@
 #include "LinkedList.h"
 #include "parser.h"
 #include "input.h"
+#include "output.h"
 
 /** \brief Carga los datos de los jugadores desde el archivo jugadores.csv (modo texto).
  * \param path char*
@@ -33,7 +34,7 @@ int controller_agregarJugador(LinkedList* pArrayListJugador);
 * \return int retorno. 0 error, 1 exitoso.
  *
  */
-int controller_editarJugador(LinkedList* pArrayListJugador);
+int controller_editarJugador(LinkedList *pArrayListJugador);
 
 /** \brief Baja del jugador
  *
@@ -119,7 +120,7 @@ int controller_cargarSeleccionesDesdeTexto(char* path , LinkedList* pArrayListSe
  * \return int
  *
  */
-int controller_editarSeleccion(LinkedList* pArrayListSeleccion);
+int controller_editarSeleccion(LinkedList* pArrayListSeleccion,LinkedList *pArrayListJugador);
 
 /** \brief Listar selecciones
  *

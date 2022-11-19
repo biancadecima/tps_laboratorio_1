@@ -83,21 +83,8 @@ int main()
             	break;
 			case 6:
 				if (ll_isEmpty(listaJugadores) == 0 && ll_isEmpty(listaSeleccion) == 0) {
-					switch (manejarMenuConvocados()) { // estaria bueno que esto lo haga en editar seleccion
-					case 1:
-						if (controller_convocarJugadores(listaJugadores,listaSeleccion)) {
-							printf("\nEl jugador fue convocado exitosamente\n");
-						} else {
-							printf("\nEl jugador no pudo ser convocado\n");
-						}
-						break;
-					case 2:
-						if (controller_quitarJugadorDeSeleccion(listaJugadores,listaSeleccion)) {
-							printf("\nEl jugador fue quitado de la seleccion exitosamente\n");
-						} else {
-							printf("\nEl jugador no pudo ser quitado de la seleccion\n");
-						}
-						break;
+					if(!controller_editarSeleccion(listaSeleccion, listaJugadores)){
+						printf("\nNo se pudo editar la seleccion\n");
 					}
 				} else {
 					printf("\nERROR: No hay jugadores cargados para convocar\n");

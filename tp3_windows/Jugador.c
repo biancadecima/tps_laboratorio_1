@@ -95,6 +95,33 @@ int jug_cargarPaisSeleccion(Jugador* pJugador,  LinkedList* pArrayListSeleccion,
 	return retorno;
 }
 
+void jug_MostrarJugador(Jugador* this){
+	int id;
+	char nombre[100];
+	char posicion[100];
+	char nacionalidad[100];
+	int edad;
+	int idSeleccion;
+	char estado[100];
+
+	if(this != NULL){
+		if(jug_getId(this, &id)
+			&& jug_getNombreCompleto(this, nombre)
+			&& jug_getPosicion(this, posicion)
+			&& jug_getNacionalidad(this, nacionalidad)
+			&& jug_getEdad(this, &edad)
+			&& jug_getSIdSeleccion(this, &idSeleccion)){
+			if(idSeleccion == 0){
+				strcpy(estado, "No convocado");
+			}else{
+				strcpy(estado, "Convocado");
+			}
+			printf("| %3d | %-24s | %-20s | %4d | %-15s | %5s |\n", id, nombre, posicion, edad, nacionalidad, estado);
+		}
+
+	}
+}
+
 void jug_MostrarJugadorConSeleccion(Jugador* this, LinkedList* pArrayListSeleccion){
 	int id;
 	char nombre[100];

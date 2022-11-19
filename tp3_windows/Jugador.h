@@ -55,6 +55,13 @@ void jug_actualizarID(int id);
  */
 int jug_cargarPaisSeleccion(Jugador* pJugador,  LinkedList* pArrayListSeleccion, char paisJugador[]);
 
+/** \brief muentra un jugador
+ *
+ * \param Jugador* this
+ * \param LinkedList* pArrayListSeleccion
+ */
+void jug_MostrarJugador(Jugador* this);
+
 /** \brief muentra un jugador con el nombre de su seleccion
  *
  * \param Jugador* this
