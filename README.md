@@ -1,4 +1,4 @@
-# tps_laboratorio_1
+#  STATEMENT / CONSIGNA tps_laboratorio_1
 -------------------------------------------------ENG-------------------------------------------------------
 
 Statement of TP 1 of the subject Computer Laboratory:
